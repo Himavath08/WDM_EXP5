@@ -1,5 +1,5 @@
 ### EX5 Information Retrieval Using Boolean Model in Python
-### DATE: 
+### DATE: 28-09-2024
 ### AIM: To implement Information Retrieval Using Boolean Model in Python.
 ### Description:
 <div align = "justify">
@@ -22,18 +22,17 @@ The Boolean model in Information Retrieval (IR) is a fundamental model used for 
     <p>c) For each term in the query, it retrieves documents containing that term and performs Boolean operations (AND, OR, NOT) based on the query's structure.
 
 ### Program:
+```
+import numpy as np
+import pandas as pd
 
-    import numpy as np
-    import pandas as pd
-    class BooleanRetrieval:
-        def __init__(self):
-            self.index = {}
-            self.documents_matrix = None
+class BooleanRetrieval:
+    def __init__(self):
+        self.index = {}
+        self.documents_matrix = None
 
     def index_document(self, doc_id, text):
         terms = text.lower().split()
-        print("Document -", doc_id, terms)
-
         for term in terms:
             if term not in self.index:
                 self.index[term] = set()
@@ -62,7 +61,40 @@ The Boolean model in Information Retrieval (IR) is a fundamental model used for 
         print(list(self.index.keys()))
 
     def boolean_search(self, query):
-        # TYPE YOUR CODE HERE
+        query = query.lower().split()
+        result_docs = None
+        all_docs = set(range(1, len(self.documents_matrix) + 1))  # Set of all document IDs
+
+        i = 0
+        while i < len(query):
+            term = query[i]
+            
+            if term == "and":
+                i += 1
+                continue  # AND is implicit, so we skip it.
+            
+            elif term == "or":
+                i += 1
+                next_term = query[i]
+                if next_term in self.index:
+                    result_docs = result_docs | self.index[next_term] if result_docs else self.index[next_term]
+            
+            elif term == "not":
+                i += 1
+                next_term = query[i]
+                if next_term in self.index:
+                    result_docs = result_docs - self.index[next_term] if result_docs else all_docs - self.index[next_term]
+            
+            else:
+                if term in self.index:
+                    if result_docs is None:
+                        result_docs = self.index[term]
+                    else:
+                        result_docs = result_docs & self.index[term]  # AND by default
+            
+            i += 1
+
+        return result_docs if result_docs else set()
 
 if __name__ == "__main__":
     indexer = BooleanRetrieval()
@@ -70,7 +102,7 @@ if __name__ == "__main__":
     documents = {
         1: "Python is a programming language",
         2: "Information retrieval deals with finding information",
-        3: "Boolean models are used in information retrieval"
+        3: "NOT THE BOOLEAN"
     }
 
     for doc_id, text in documents.items():
@@ -86,8 +118,13 @@ if __name__ == "__main__":
         print(f"Results for '{query}': {results}")
     else:
         print("No results found for the query.")
+````
 
 
 ### Output:
 
+![Screenshot 2024-09-28 135951](https://github.com/user-attachments/assets/50a1b838-3ceb-4805-b4d0-e28222cbc0e0)
+
+
 ### Result:
+CODE EXECUTED SUCCESSFULLY
